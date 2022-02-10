@@ -126,9 +126,9 @@ STATICFILES_DIRS = [
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 导入邮件模块
 EMAIL_HOST = 'smtp.163.com'  # 发邮件主机
 EMAIL_PORT = 25  # 发邮件端口
-EMAIL_HOST_USER = '18312913688@163.com'  # 授权的邮箱
-EMAIL_HOST_PASSWORD = 'admin666'  # 邮箱授权时获得的密码，非注册登录密码
-EMAIL_FROM = '天天生鲜<18312913688@163.com>'  # 发件人抬头
+EMAIL_HOST_USER = 'xxxx@xxxx.com'  # 授权的邮箱
+EMAIL_HOST_PASSWORD = 'xxxxxxx'  # 邮箱授权时获得的密码，非注册登录密码
+EMAIL_FROM = 'DailyFresh<xxxx@xxxx.co>'  # 发件人抬头
 
 # 缓存， 配置django-redis
 CACHES = {
