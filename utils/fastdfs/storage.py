@@ -35,7 +35,7 @@ class FastDFSStorage(Storage):
             ret = client.upload_by_buffer(file_data)
         except Exception as e:
             print(e)
-            raise
+            raise e
         """ ret返回下面这种类型的值
         {
             'Group name': 'group1',
@@ -63,5 +63,6 @@ class FastDFSStorage(Storage):
     def url(self, name):
         # name: group1/M00/00/00/wKjzh0_xaR63RExnAAAaDqbNk5E1398.py
         # <img src='http://192.168.217.136:8888/group1/M00/00/00/wKjzh0_xaR63RExnAAAaDqbNk5E1398.py'>
+        print(self.server_ip + name)
         return self.server_ip + name
 

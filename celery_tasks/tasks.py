@@ -6,7 +6,7 @@ from celery import Celery
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template import loader
-from goods.models import GoodsCategory, IndexGoodsBanner, IndexPromotionBanner, IndexCategoryGoodsBanner
+from apps.goods.models import GoodsCategory, IndexGoodsBanner, IndexPromotionBanner, IndexCategoryGoodsBanner
 
 # 实例化celery对象   第一个参数为生成任务的文件路径  第二个参数为broker
 app = Celery('clelry_tasks.tasks', broker='redis://192.168.3.168:6379/3')

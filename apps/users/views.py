@@ -7,10 +7,10 @@ from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from users.models import User, Address
+from apps.users.models import User, Address, TimedSignSerializer as Serializer
 from django.conf import settings
 from celery_tasks.tasks import send_active_mail
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+# from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from utils.views import LoginRequiredMixin
 
 

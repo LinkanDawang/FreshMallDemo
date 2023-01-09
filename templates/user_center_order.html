@@ -1,6 +1,6 @@
 {% extends 'user_center_base.html' %}
 
-{% load staticfiles %}
+{% load static %}
 
 {% block title %}天天生鲜-用户中心{% endblock %}
 
@@ -10,7 +10,7 @@
             <h3>用户中心</h3>
             <ul>
                 <li><a href="{% url 'users:info' %}">· 个人信息</a></li>
-                <li><a href="{% url 'orders:info' 1 %}" class="active">· 全部订单</a></li>
+                <li><a href="{% url 'orders:info' %}" class="active">· 全部订单</a></li>
                 <li><a href="{% url 'users:address' %}">· 收货地址</a></li>
             </ul>
         </div>
@@ -27,12 +27,12 @@
                     <tbody>
                     <tr>
                         <td width="55%">
-                            {% for sku in order.skus %}
+                            {% for good in order.goods.all %}
                                 <ul class="order_goods_list clearfix">
-                                    <li class="col01"><img src="{{ sku.default_image.url }}"></li>
-                                    <li class="col02">{{ sku.name }}<em>{{ sku.price }}/{{ sku.unit }}</em></li>
-                                    <li class="col03">{{ sku.count }}</li>
-                                    <li class="col04">{{ sku.amount }}元</li>
+                                    <li class="col01"><img src="{{ good.sku.default_image.url }}"></li>
+                                    <li class="col02">{{ good.sku.name }}<em>{{ good.sku.price }}/{{ good.sku.unit }}</em></li>
+                                    <li class="col03">{{ good.count }}</li>
+                                    <li class="col04">{{ good.price }}元</li>
                                 </ul>
                             {% endfor %}
                         </td>

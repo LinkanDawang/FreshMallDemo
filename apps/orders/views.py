@@ -1,4 +1,5 @@
 # from django.core.urlresolvers import reverse
+from django.db.models.aggregates import Sum
 from django.urls import reverse
 from django.shortcuts import render, redirect
 import json
@@ -6,7 +7,8 @@ import os
 from django.views.generic import View
 from django_redis import get_redis_connection
 
-from users.models import Address
+from apps.users.models import Address
+from .models import OrderInfo
 
 
 class PlaceOrderView(View):
@@ -41,3 +43,13 @@ class PlaceOrderView(View):
             pass
 
 
+class UserOrdersView(View):
+    def get(self, request):
+        user = request.user
+        orders = OrderInfo.objects.select_related("address").prefetch_related(
+            "goods", "goods__sku"
+        ).filter(user=user)
+        context = {
+            "orders": orders
+        }
+        return render(request, "user_center_order.html", context=context)

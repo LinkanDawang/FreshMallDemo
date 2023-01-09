@@ -1,7 +1,7 @@
 from django.db import models
 from utils.models import BaseModel
-from users.models import User, Address
-from goods.models import GoodsSKU
+from apps.users.models import User, Address
+from apps.goods.models import GoodsSKU
 
 # Create your models here.
 
@@ -59,13 +59,23 @@ class OrderInfo(BaseModel):
     status = models.SmallIntegerField(choices=ORDER_STATUS_CHOICES, default=1, verbose_name="订单状态")
     trade_id = models.CharField(max_length=100, unique=True, null=True, blank=True, verbose_name="支付编号")
 
+    @property
+    def status_name(self):
+        return self.get_status_display()
+
+    @property
+    def pay_method_name(self):
+        return self.get_pay_method_display()
+
     class Meta:
         db_table = "df_order_info"
 
 
 class OrderGoods(BaseModel):
     """订单商品"""
-    order = models.ForeignKey(OrderInfo, on_delete=models.CASCADE, verbose_name="订单")
+    order = models.ForeignKey(
+        OrderInfo, primary_key="order_id", on_delete=models.CASCADE, related_name="goods", verbose_name="订单"
+    )
     sku = models.ForeignKey(GoodsSKU, on_delete=models.CASCADE, verbose_name="订单商品")
     count = models.IntegerField(default=1, verbose_name="数量")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="单价")

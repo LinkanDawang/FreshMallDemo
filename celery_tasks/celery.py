@@ -10,7 +10,6 @@ if not settings.configured:
 app = Celery('celery.tasks.celery', broker='amqp://leslie:admin@192.168.3.168:5672/administrator', backend='redis://192.168.3.168:6379/4')
 
 
-
 class CeleryConfig(AppConfig):
     name = 'celery_tasks'
     verbose_name = 'Celery Config'

@@ -20,7 +20,7 @@ class LoginRequiredMixin(object):
 def Login_Required_Json(view_func):
     @wraps(view_func)  # 恢复view_fun的名字和文档
     def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return view_func(request, *args, **kwargs)
         else:
             return JsonResponse({'code': 1, 'msg': '用户未登录'})

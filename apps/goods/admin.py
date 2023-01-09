@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.core.cache import cache
 from celery_tasks.tasks import generate_index
 from celery_tasks.itsme import static_index
-from goods.models import GoodsCategory, Goods, GoodsSKU, IndexGoodsBanner, IndexCategoryGoodsBanner, \
+from apps.goods.models import GoodsCategory, Goods, GoodsSKU, IndexGoodsBanner, IndexCategoryGoodsBanner, \
     IndexPromotionBanner
 
 
@@ -12,15 +12,15 @@ class BaseAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.save()
         # generate_index.sl().delay()
-        static_index.si().delay()
-        cache.delete('index_cache_data')
+        # static_index.si().delay()
+        # cache.delete('index_cache_data')
         print('在后台修改了数据')
 
     def delete_model(self, request, obj):
         obj.delete()
         # generate_index.si().delay()
-        static_index.si().delay()
-        cache.delete('index_cache_data')
+        # static_index.si().delay()
+        # cache.delete('index_cache_data')
         print('在后台删除了数据')
 
 

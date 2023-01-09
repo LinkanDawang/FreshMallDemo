@@ -8,7 +8,7 @@ from django_redis import get_redis_connection
 from django.core.cache import cache
 from django.views.generic import View
 
-from goods.models import GoodsCategory, IndexGoodsBanner, IndexPromotionBanner, IndexCategoryGoodsBanner, GoodsSKU
+from apps.goods.models import GoodsCategory, IndexGoodsBanner, IndexPromotionBanner, IndexCategoryGoodsBanner, GoodsSKU
 
 
 class BaseCart(View):
@@ -19,7 +19,7 @@ class BaseCart(View):
         cart_num = 0
 
         # 用户登入，从redis中获取数据
-        if user.is_authenticated():
+        if user.is_authenticated:
             redis_conn = get_redis_connection('default')
             # 获取购物车所有的商品信息[skuid1:1, skuid2:10, skuid3:15]
             cart = redis_conn.hgetall('cart_%s' % user.id)
@@ -54,12 +54,15 @@ class IndexView(BaseCart):
             # 遍历所有的商品类别
             for category in categorys:
                 # 获取不带图片的类别
-                title_banners = IndexCategoryGoodsBanner.objects.filter(category=category, display_type=0).order_by(
-                    'index')
+                title_banners = IndexCategoryGoodsBanner.objects.select_related("sku").filter(
+                    category=category, display_type=0
+                ).order_by('index')
                 category.title_banners = title_banners
 
                 # 获取带图片的数据
-                image_banners = IndexCategoryGoodsBanner.objects.filter(category=category, display_type=1).order_by(
+                image_banners = IndexCategoryGoodsBanner.objects.select_related("sku").filter(
+                    category=category, display_type=1
+                ).order_by(
                     'index')
                 category.image_banners = image_banners
 
@@ -70,7 +73,7 @@ class IndexView(BaseCart):
             }
 
             # 把主页需要的数据缓存起来
-            cache.set('index_cache_data', context, 3600)
+            # cache.set('index_cache_data', context, 3600)
         else:
             print('使用缓存数据填充主页')
 
@@ -138,7 +141,7 @@ class DetailView(BaseCart):
         context['cart_num'] = cart_num
 
         # 用户登入
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             # 获取用户对象
             user = request.user
             # 从redis中获取购物车的信息

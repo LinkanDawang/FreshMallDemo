@@ -13,10 +13,16 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import sys
+import environ
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # 把apps文件夹添加到导包路径
-sys.path.insert(1, os.path.join(BASE_DIR, 'apps'))
+APP_DIR = BASE_DIR / "apps"
+sys.path.insert(1, os.path.join(APP_DIR))
+
+env = environ.Env()
+env.read_env(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -25,10 +31,9 @@ sys.path.insert(1, os.path.join(BASE_DIR, 'apps'))
 SECRET_KEY = 'm)-i2x=@fgggqo&1n@6+lh!6cu)rijx#5ejjeh!%)$pi8o#^n2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -39,19 +44,20 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
-    'goods',
-    'orders',
-    'cart',
+    'apps.users',
+    'apps.goods',
+    'apps.orders',
+    'apps.cart',
     'celery_tasks.celery.CeleryConfig'  # 添加celery应用
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
+    "django.middleware.security.SecurityMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -78,18 +84,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dailyfresh.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dailyfresh',
-        'HOST': 'localhost',  # MySQL数据库地址(主)
-        'USER': 'root',
-        'PORT': '3306',
-        'PASSWORD': 'mysql',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "mydatabase",
+        "OPTIONS": {
+            "timeout": 20,
+        }
     }
 }
 # 数据库主从的读写分离配置
@@ -107,7 +111,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -134,7 +137,7 @@ EMAIL_FROM = 'DailyFresh<xxxx@xxxx.co>'  # 发件人抬头
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.3.168:6379/5",
+        "LOCATION": env.str("REDIS_URL"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -151,11 +154,18 @@ SESSION_CACHE_ALIAS = "default"
 LOGIN_URL = '/users/login'
 
 # 配置django自定义的存储系统
-DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FastDFSStorage'
+# DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FastDFSStorage'
+DEFAULT_FILE_STORAGE = 'utils.qiniu.QiNiuStorage'
+STATICFILES_STORAGE = 'utils.qiniu.QiNiuStorage'
+
+OSS_ACCESS_KEY = env.str("OSS_ACCESS_KEY")
+OSS_SECRET_KEY = env.str("OSS_SECRET_KEY")
+OSS_BUCKET_NAME = env.str("OSS_BUCKET_NAME")
+OSS_BASE_URL = env.str("OSS_BASE_URL")
 
 # fdfs默认配置
-FDFS_CLIENT_CONF = os.path.join(BASE_DIR, './utils/fastdfs/client.conf')
-FDFS_SERVER_IP = 'http://192.168.3.168:8888/'
+# FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
+# FDFS_SERVER_IP = 'http://127.0.0.1:8888/'
 
 # # 富文本编辑框的配置
 # TINYMCE_DEFAULT_CONFIG = {
@@ -168,7 +178,7 @@ FDFS_SERVER_IP = 'http://192.168.3.168:8888/'
 # ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
 #
 # # 搜集静态文件
-# STATIC_ROOT = '/home/python/Desktop/static'
+STATIC_ROOT = '/Users/leslie/workspace/FreshMallDemo/ssss'
 #
 # # 配置搜索引擎后端
 # HAYSTACK_CONNECTIONS = {
@@ -194,4 +204,3 @@ CELERY_RESULT_BACKEND = 'redis://192.168.3.168:6379/4'
 CELERY_TIMEZONE = 'Asia/Shanghai'
 CELERY_ENABLE_UTC = True
 CELERYD_MAX_TASKS_PER_CHILD = 5
-

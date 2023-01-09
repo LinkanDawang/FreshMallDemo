@@ -3,12 +3,12 @@
 {% block body %}
 <body>
 	<div class="main_con clearfix">
-        {% load staticfiles %}
+        {% load static %}
 		<div class="left_menu_con clearfix">
 			<h3>用户中心</h3>
 			<ul>
 				<li><a href="{% url 'users:info' %}">· 个人信息</a></li>
-				<li><a href="{% url 'orders:info' 1 %}">· 全部订单</a></li>
+				<li><a href="{% url 'orders:info' %}">· 全部订单</a></li>
 				<li><a href="{% url 'users:address' %}" class="active">· 收货地址</a></li>
 			</ul>
 		</div>
@@ -19,7 +19,7 @@
 						<dt>当前地址：</dt>
 						{# <dd>北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 182****7528</dd> #}
                         <dd>{{ address.detail_addr }}</dd>
-					</dl>					
+					</dl>
 				</div>
 				<h3 class="common_title2">编辑地址</h3>
 				<div class="site_con">

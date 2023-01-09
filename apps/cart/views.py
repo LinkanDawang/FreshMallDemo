@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import View
 from django_redis import get_redis_connection
-from goods.models import GoodsSKU
+from apps.goods.models import GoodsSKU
 
 
 class AddCartView(View):
@@ -86,7 +86,7 @@ class CartInfoView(View):
         # 用户登入，从redis中获取数据， 用户未登入，从浏览器cookie获取数据
         user = request.user
 
-        if user.is_authenticated():
+        if user.is_authenticated:
             redis_conn = get_redis_connection('default')
             # 获取所有的数据
             cart_dict = redis_conn.hgetall('cart_%s' % user.id)
