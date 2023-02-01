@@ -23,7 +23,7 @@ django-environ = "^0.9.0"
 django-storages = "^1.13.2"
 boto3 = "^1.26.61"
 collectfast = "^2.2.0"
-cryptography = "38"
+cryptography = "38.0.3"
 
 
 [build-system]
