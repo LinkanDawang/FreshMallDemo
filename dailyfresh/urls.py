@@ -16,9 +16,10 @@ Including another URLconf
 from django.conf.urls import include
 from django.urls import path, re_path
 from django.contrib import admin
-# from django.views.generic import TemplateView
+from django.views.generic import RedirectView
 
 urlpatterns = [
+    re_path(r"^/?$", RedirectView.as_view(url="/goods/index")),
     path(r'admin/', admin.site.urls),
     # url(r'^.*$', TemplateView.as_view(template_name="static_ok_index.html")),  # 用户模块
     re_path(r'^users/', include('apps.users.urls', namespace='users')),  # 用户模块
