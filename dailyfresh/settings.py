@@ -16,13 +16,13 @@ import sys
 import environ
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent
 # 把apps文件夹添加到导包路径
-APP_DIR = BASE_DIR / "apps"
+APP_DIR = ROOT_DIR / "apps"
 sys.path.insert(1, os.path.join(APP_DIR))
 
 env = environ.Env()
-env.read_env(BASE_DIR / ".env")
+env.read_env(ROOT_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
+    'collectfast',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,7 +49,8 @@ INSTALLED_APPS = (
     'apps.goods',
     'apps.orders',
     'apps.cart',
-    'celery_tasks.celery.CeleryConfig'  # 添加celery应用
+    'celery_tasks.celery.CeleryConfig',  # 添加celery应用
+    'storages',
 )
 
 MIDDLEWARE = (
@@ -68,7 +70,7 @@ ROOT_URLCONF = 'dailyfresh.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(ROOT_DIR, 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -122,7 +124,7 @@ AUTH_USER_MODEL = 'users.User'
 
 # 指定静态文件存放的目录
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(ROOT_DIR, 'static')
 ]
 
 # 配置发送邮箱验证邮件发件人的信息
@@ -155,13 +157,32 @@ LOGIN_URL = '/users/login'
 
 # 配置django自定义的存储系统
 # DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FastDFSStorage'
-DEFAULT_FILE_STORAGE = 'utils.qiniu.QiNiuStorage'
-STATICFILES_STORAGE = 'utils.qiniu.QiNiuStorage'
+# DEFAULT_FILE_STORAGE = 'utils.qiniu.QiNiuStorage'
+# STATICFILES_STORAGE = 'utils.qiniu.QiNiuStorage'
+#
+# OSS_ACCESS_KEY = env.str("OSS_ACCESS_KEY")
+# OSS_SECRET_KEY = env.str("OSS_SECRET_KEY")
+# OSS_BUCKET_NAME = env.str("OSS_BUCKET_NAME")
+# OSS_BASE_URL = env.str("OSS_BASE_URL")
+STATICFILES_STORAGE = "utils.storage.MinioStaticStorage"
+COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
 
-OSS_ACCESS_KEY = env.str("OSS_ACCESS_KEY")
-OSS_SECRET_KEY = env.str("OSS_SECRET_KEY")
-OSS_BUCKET_NAME = env.str("OSS_BUCKET_NAME")
-OSS_BASE_URL = env.str("OSS_BASE_URL")
+DEFAULT_FILE_STORAGE = "utils.storage.MinioMediaStorage"
+
+AWS_S3_ACCESS_KEY_ID = env.str("AWS_S3_ACCESS_KEY_ID")
+AWS_S3_SECRET_ACCESS_KEY = env.str("AWS_S3_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_ENDPOINT_URL = env.str("AWS_S3_ENDPOINT_URL")
+# AWS_SESSION_TOKEN
+# AWS_SECURITY_TOKEN
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+MEDIA_ROOT = str(ROOT_DIR / "media")
+MEDIA_URL = "/media/"
 
 # fdfs默认配置
 # FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')

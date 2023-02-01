@@ -20,6 +20,10 @@ django-tinymce = "^3.5.0"
 fdfs-client-py3 = "^1.0.0"
 qiniu = "^7.9.0"
 django-environ = "^0.9.0"
+django-storages = "^1.13.2"
+boto3 = "^1.26.61"
+collectfast = "^2.2.0"
+cryptography = "38"
 
 
 [build-system]
