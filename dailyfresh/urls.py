@@ -19,11 +19,13 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    re_path(r"^/?$", RedirectView.as_view(url="/goods/index")),
+    re_path(r"^$", RedirectView.as_view(url="/goods/index")),
     path(r'admin/', admin.site.urls),
-    # url(r'^.*$', TemplateView.as_view(template_name="static_ok_index.html")),  # 用户模块
-    re_path(r'^users/', include('apps.users.urls', namespace='users')),  # 用户模块
-    re_path(r'^goods/', include('apps.goods.urls', namespace='goods')),  # 商品模块
-    re_path(r'^cart/', include('apps.cart.urls', namespace='cart')),  # 购物车模块
-    re_path(r'^orders/', include('apps.orders.urls', namespace='orders')),  # 订单模块
+    path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
+    # url(r'^.*$', TemplateView.as_view(template_name="static_ok_index.html"))
+    re_path(r'^users/', include('apps.users.urls', namespace='users')),
+    re_path(r'^goods/', include('apps.goods.urls', namespace='goods')),
+    re_path(r'^cart/', include('apps.cart.urls', namespace='cart')),
+    re_path(r'^orders/', include('apps.orders.urls', namespace='orders')),
+
 ]

@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'apps.cart',
     'celery_tasks.celery.CeleryConfig',  # 添加celery应用
     'storages',
+    'oauth2_provider',
 )
 
 MIDDLEWARE = (
@@ -88,14 +89,16 @@ WSGI_APPLICATION = 'dailyfresh.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "mydatabase",
-        "OPTIONS": {
-            "timeout": 20,
-        }
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PW"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT"),
+        "OPTIONS": {"options": f"-c search_path={env('DB_SCHEMA')}"},
+        "CONN_MAX_AGE": 60,
     }
 }
 # 数据库主从的读写分离配置
@@ -164,10 +167,10 @@ LOGIN_URL = '/users/login'
 # OSS_SECRET_KEY = env.str("OSS_SECRET_KEY")
 # OSS_BUCKET_NAME = env.str("OSS_BUCKET_NAME")
 # OSS_BASE_URL = env.str("OSS_BASE_URL")
-STATICFILES_STORAGE = "utils.storage.MinioStaticStorage"
+# STATICFILES_STORAGE = "utils.storage.MinioStaticStorage"
 COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
 
-DEFAULT_FILE_STORAGE = "utils.storage.MinioMediaStorage"
+# DEFAULT_FILE_STORAGE = "utils.storage.MinioMediaStorage"
 
 AWS_S3_ACCESS_KEY_ID = env.str("AWS_S3_ACCESS_KEY_ID")
 AWS_S3_SECRET_ACCESS_KEY = env.str("AWS_S3_SECRET_ACCESS_KEY")

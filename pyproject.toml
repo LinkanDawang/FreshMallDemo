@@ -24,6 +24,9 @@ django-storages = "^1.13.2"
 boto3 = "^1.26.61"
 collectfast = "^2.2.0"
 cryptography = "38"
+authlib = "^1.2.0"
+django-oauth-toolkit = "^2.2.0"
+psycopg2-binary = "^2.9.5"
 
 
 [build-system]
